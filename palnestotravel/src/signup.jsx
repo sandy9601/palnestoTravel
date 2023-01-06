@@ -1,9 +1,10 @@
 import React, { useState } from "react";
+//import { post } from "../../backend/src/routes/route";
 
-export const Signup = () => {
+export const Signup = (props) => {
   const [user, setUser] = useState({
-    name: "",
-    phonenumber: "",
+    userName: "",
+    phoneNumber: "",
     email: "",
     password: "",
   });
@@ -13,25 +14,43 @@ export const Signup = () => {
     value = e.target.value;
     setUser({ ...user, [name]: value });
   };
+  const postData = async (e) => {
+    e.preventDefault();
+    const { userName, phoneNumber, email, password } = user;
+
+    const res = await fetch("/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userName,
+        phoneNumber,
+        email,
+        password,
+      }),
+    });
+  };
+
   return (
     <div>
-      <form>
-        <label>name </label>
+      <form method="POST" onSubmit={postData}>
+        <label>userName </label>
         <input
           type="text"
-          name="name"
+          name="userName"
           autoComplete="off"
-          value={user.name}
+          value={user.userName}
           onChange={handlerInputs}
           placeholder="Enter Your Name"
-        />{" "}
+        />
         <br />
         <label>phoneNumber </label>
         <input
           type="text"
           name="phoneNumber"
           autoComplete="off"
-          value={user.phonenumber}
+          value={user.phoneNumber}
           onChange={handlerInputs}
           placeholder="Enter Your PhonNumber"
         />
@@ -56,8 +75,15 @@ export const Signup = () => {
           placeholder="********"
         />
         <br />
-        <input type="submit" value="signup" />
-      </form>
+        <input type="submit" value="signup" /> <br />
+        <input
+          type="button"
+          value="Already Have Account"
+          onClick={() => {
+            props.loginPage("login");
+          }}
+        />
+      </form >
     </div>
   );
 };
